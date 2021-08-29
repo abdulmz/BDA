@@ -23,13 +23,13 @@ print("Displaying each batter and bowler count") #for each ball
 rsDF1=dDF1.select('deliveries.batter','deliveries.bowler',f.col('deliveries.runs.batter').alias("runs_scored"))
 rsDF1.show()
 print("Displaying total runs scored") #for each bowler
-trDF1=rsDF1.groupBy('batter','bowler').agg(f.sum('runs_scored').alias('total_runs_scored'))
+trDF1=rsDF1.groupBy('batter','bowler').agg(f.sum('runs_scored').alias('TotalRunsScored'))
 trDF1.show()
 print("Maximun runs scored") 
-mrsDF1=trDF1.groupBy('batter').agg(f.max('total_runs_scored').alias('max_runs_scored'))
+mrsDF1=trDF1.groupBy('batter').agg(f.max('TotalRunsScored').alias('MaxRunsScored'))
 mrsDF1.show()
 print("maximun runs scored among all bowlers") #maximum runs scored by a batter for a particular bowler
-resDF1=trDF1.join(mrsDF1, (mrsDF1.max_runs_scored==trDF1.total_runs_scored) & (mrsDF1.batter==trDF1.batter), how="leftsemi").withColumnRenamed("total_runs_scored", "max_runs_scored")
+resDF1=trDF1.join(mrsDF1, (mrsDF1.MaxRunsScored==trDF1.TotalRunsScored) & (mrsDF1.batter==trDF1.batter), how="leftsemi").withColumnRenamed("TotalRunsScored", "MaxRunsScored")
 resDF1.show()
 
 print("Second Innings ")
@@ -49,13 +49,13 @@ rsDF2=dDF2.select('deliveries.batter','deliveries.bowler',f.col('deliveries.runs
 rsDF2.show()
 
 print("Displaying total runs scored")
-trDF2=rsDF2.groupBy('batter','bowler').agg(f.sum('runs_scored').alias('total_runs_scored'))
-trDF2.show()
+TotalRunsDF=rsDF2.groupBy('batter','bowler').agg(f.sum('runs_scored').alias('TotalRunsScored'))
+TotalRunsDF.show()
 
 print("Maximun runs scored")
-mrsDF2=trDF2.groupBy('batter').agg(f.max('total_runs_scored').alias('max_runs_scored'))
-mrsDF2.show()
+MaxRunsDF=TotalRunsDF.groupBy('batter').agg(f.max('TotalRunsScored').alias('MaxRunsScored'))
+MaxRunsDF.show()
 
 print("maximun runs scored among all bowlers")
-resDF2=trDF2.join(mrsDF2, (mrsDF2.max_runs_scored==trDF2.total_runs_scored) & (mrsDF2.batter==trDF2.batter), how="leftsemi").withColumnRenamed("total_runs_scored", "max_runs_scored")
-resDF2.show()
+resultDF=TotalRunsDF.join(MaxRunsDF, (MaxRunsDF.MaxRunsScored==TotalRunsDF.TotalRunsScored) & (MaxRunsDF.batter==TotalRunsDF.batter), how="leftsemi").withColumnRenamed("TotalRunsScored", "MaxRunsScored")
+resultDF.show()
